@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.todomaster.ui.components.topbar.HomeTopBar
-import com.example.todomaster.ui.viewmodel.TaskViewModel
+import com.example.todomaster.viewmodel.TaskViewModel
 
 @Composable
 fun HomeScreen(

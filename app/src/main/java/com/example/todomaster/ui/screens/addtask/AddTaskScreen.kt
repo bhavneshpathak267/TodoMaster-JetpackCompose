@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.example.todomaster.ui.viewmodel.TaskViewModel
+import com.example.todomaster.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

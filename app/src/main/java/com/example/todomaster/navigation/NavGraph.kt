@@ -9,19 +9,40 @@ import androidx.navigation.navArgument
 import com.example.todomaster.ui.screens.addtask.AddTaskScreen
 import com.example.todomaster.ui.screens.edittask.EditTaskScreen
 import com.example.todomaster.ui.screens.home.HomeScreen
+import com.example.todomaster.ui.screens.login.LoginScreen
+import com.example.todomaster.ui.screens.register.RegisterScreen
 import com.example.todomaster.ui.screens.settings.SettingsScreen
-import com.example.todomaster.ui.viewmodel.TaskViewModel
+import com.example.todomaster.ui.screens.splash.SplashScreen
+import com.example.todomaster.viewmodel.TaskViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
     viewModel: TaskViewModel
 ) {
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Splash.route
     ) {
-        composable(route = Screen.Home.route) {
+
+        // Splash
+        composable(Screen.Splash.route) {
+            SplashScreen(navController)
+        }
+
+        // Login
+        composable(Screen.Login.route) {
+            LoginScreen(navController)
+        }
+
+        // Register
+        composable(Screen.Register.route) {
+            RegisterScreen(navController)
+        }
+
+        // Home
+        composable(Screen.Home.route) {
             HomeScreen(
                 viewModel = viewModel,
                 onNavigateToAddTask = {
@@ -36,7 +57,8 @@ fun NavGraph(
             )
         }
 
-        composable(route = Screen.AddTask.route) {
+        // Add Task
+        composable(Screen.AddTask.route) {
             AddTaskScreen(
                 viewModel = viewModel,
                 onNavigateBack = {
@@ -45,11 +67,19 @@ fun NavGraph(
             )
         }
 
+        // Edit Task
         composable(
             route = Screen.EditTask.route,
-            arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.IntType
+                }
+            )
         ) { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
+
+            val taskId =
+                backStackEntry.arguments?.getInt("taskId") ?: -1
+
             EditTaskScreen(
                 taskId = taskId,
                 viewModel = viewModel,
@@ -59,7 +89,8 @@ fun NavGraph(
             )
         }
 
-        composable(route = Screen.Settings.route) {
+        // Settings
+        composable(Screen.Settings.route) {
             SettingsScreen(
                 onNavigateBack = {
                     navController.popBackStack()

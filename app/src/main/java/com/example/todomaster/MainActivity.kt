@@ -12,8 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.todomaster.di.AppContainer
 import com.example.todomaster.navigation.NavGraph
 import com.example.todomaster.ui.theme.TodoMasterTheme
-import com.example.todomaster.ui.viewmodel.TaskViewModel
-import com.example.todomaster.ui.viewmodel.TaskViewModelFactory
+import com.example.todomaster.viewmodel.TaskViewModel
+import com.example.todomaster.viewmodel.TaskViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
