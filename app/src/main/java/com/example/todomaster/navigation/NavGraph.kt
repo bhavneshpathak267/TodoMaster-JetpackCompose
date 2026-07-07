@@ -1,5 +1,6 @@
 package com.example.todomaster.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,7 +15,10 @@ import com.example.todomaster.ui.screens.register.RegisterScreen
 import com.example.todomaster.ui.screens.settings.SettingsScreen
 import com.example.todomaster.ui.screens.splash.SplashScreen
 import com.example.todomaster.viewmodel.TaskViewModel
+import com.example.todomaster.viewmodel.AuthViewModel
 
+
+@SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -28,17 +32,30 @@ fun NavGraph(
 
         // Splash
         composable(Screen.Splash.route) {
-            SplashScreen(navController)
-        }
 
+            SplashScreen(
+
+                navController = navController,
+
+                authViewModel = AuthViewModel()
+
+            )
+
+        }
         // Login
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(
+                navController = navController,
+                authViewModel = AuthViewModel()
+            )
         }
 
         // Register
         composable(Screen.Register.route) {
-            RegisterScreen(navController)
+            RegisterScreen(
+                navController = navController,
+                authViewModel = AuthViewModel()
+            )
         }
 
         // Home

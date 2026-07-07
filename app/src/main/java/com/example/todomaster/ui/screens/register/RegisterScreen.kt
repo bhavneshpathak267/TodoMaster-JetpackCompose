@@ -1,5 +1,6 @@
 package com.example.todomaster.ui.screens.register
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +12,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.todomaster.navigation.Screen
+import com.example.todomaster.viewmodel.AuthViewModel
 
 @Composable
 fun RegisterScreen(
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
+
+    val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -59,7 +66,34 @@ fun RegisterScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                navController.popBackStack()
+
+                authViewModel.registerUser(
+                    email = email,
+                    password = password,
+
+                    onSuccess = {
+
+                        Toast.makeText(
+                            context,
+                            "Account Created Successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        navController.navigate(Screen.Login.route)
+
+                    },
+
+                    onFailure = { message ->
+
+                        Toast.makeText(
+                            context,
+                            message,
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    }
+                )
+
             }
         ) {
             Text("Register")

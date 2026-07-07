@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 android {
     namespace = "com.example.todomaster"
@@ -58,4 +59,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 }
