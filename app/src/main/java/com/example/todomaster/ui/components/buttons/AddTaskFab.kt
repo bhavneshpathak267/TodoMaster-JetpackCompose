@@ -10,11 +10,7 @@ import androidx.compose.runtime.Composable
 fun AddTaskFab(
     onClick: () -> Unit
 ) {
-
-    FloatingActionButton(
-        onClick = onClick
-    ) {
-
+    FloatingActionButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "Add Task"

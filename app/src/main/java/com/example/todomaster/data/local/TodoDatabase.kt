@@ -10,6 +10,5 @@ import com.example.todomaster.data.model.TaskEntity
     exportSchema = false
 )
 abstract class TodoDatabase : RoomDatabase() {
-
-    abstract fun taskDao(): TaskDao
+    abstract val taskDao: TaskDao
 }

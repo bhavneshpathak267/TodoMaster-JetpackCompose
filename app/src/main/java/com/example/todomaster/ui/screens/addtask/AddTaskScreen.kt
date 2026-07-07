@@ -1,71 +1,53 @@
 package com.example.todomaster.ui.screens.addtask
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.example.todomaster.ui.viewmodel.TaskViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
-    navController: NavController
+    viewModel: TaskViewModel,
+    onNavigateBack: () -> Unit
 ) {
+    var state by remember { mutableStateOf(AddTaskState()) }
 
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-
-        Text(
-            text = "Add New Task",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text("Task Title")
-            }
-        )
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text("Task Description")
-            }
-        )
-
-        Button(
-            onClick = {
-
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-
-            Text("Save Task")
-
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Add New Task") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
         }
-
+    ) { paddingValues ->
+        AddTaskContent(
+            state = state,
+            onEvent = { event ->
+                when (event) {
+                    is AddTaskEvent.TitleChanged -> {
+                        state = state.copy(title = event.title)
+                    }
+                    is AddTaskEvent.DescriptionChanged -> {
+                        state = state.copy(description = event.description)
+                    }
+                    is AddTaskEvent.SaveTask -> {
+                        if (state.canSave) {
+                            state = state.copy(isSaving = true)
+                            viewModel.addTask(state.title, state.description)
+                            onNavigateBack()
+                        }
+                    }
+                }
+            },
+            modifier = Modifier.padding(paddingValues)
+        )
     }
 }

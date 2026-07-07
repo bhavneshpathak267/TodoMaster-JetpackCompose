@@ -4,25 +4,17 @@ import android.content.Context
 import androidx.room.Room
 
 object DatabaseProvider {
+    private var instance: TodoDatabase? = null
 
-    @Volatile
-    private var INSTANCE: TodoDatabase? = null
-
-    fun getDatabase(context: Context): TodoDatabase {
-
-        return INSTANCE ?: synchronized(this) {
-
-            val instance = Room.databaseBuilder(
+    fun provideDatabase(context: Context): TodoDatabase {
+        return instance ?: synchronized(this) {
+            val db = Room.databaseBuilder(
                 context.applicationContext,
                 TodoDatabase::class.java,
-                "todo_database"
-            )
-                .fallbackToDestructiveMigration(false)
-                .build()
-
-            INSTANCE = instance
-
-            instance
+                "todo_master_db"
+            ).build()
+            instance = db
+            db
         }
     }
 }

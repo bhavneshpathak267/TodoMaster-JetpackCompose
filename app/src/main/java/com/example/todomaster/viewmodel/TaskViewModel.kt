@@ -1,4 +1,4 @@
-package com.example.todomaster.viewmodel
+package com.example.todomaster.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,59 +8,71 @@ import com.example.todomaster.ui.state.TaskUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class TaskViewModel(
     private val taskUseCases: TaskUseCases
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(TaskUiState())
-
-    val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(TaskUiState())
+    val state: StateFlow<TaskUiState> = _state.asStateFlow()
 
     init {
-        getAllTasks()
+        getTasks()
     }
 
-    private fun getAllTasks() {
-
-        viewModelScope.launch {
-
-            taskUseCases.getTasks().collect { taskList ->
-
-                _uiState.update {
-                    it.copy(tasks = taskList)
-                }
-
+    private fun getTasks() {
+        _state.value = _state.value.copy(isLoading = true)
+        taskUseCases.getTasks()
+            .onEach { tasks ->
+                _state.value = _state.value.copy(
+                    tasks = tasks,
+                    isLoading = false,
+                    error = null
+                )
             }
-
-        }
-
+            .catch { e ->
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "An unexpected error occurred"
+                )
+            }
+            .launchIn(viewModelScope)
     }
 
-    fun addTask(task: Task) {
-
+    fun addTask(title: String, description: String) {
         viewModelScope.launch {
-            taskUseCases.addTask(task)
+            try {
+                val newTask = Task(title = title, description = description)
+                taskUseCases.addTask(newTask)
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = e.message)
+            }
         }
-
     }
 
     fun updateTask(task: Task) {
-
         viewModelScope.launch {
             taskUseCases.updateTask(task)
         }
+    }
 
+    fun toggleTaskCompletion(task: Task) {
+        viewModelScope.launch {
+            taskUseCases.updateTask(task.copy(isCompleted = !task.isCompleted))
+        }
     }
 
     fun deleteTask(task: Task) {
-
         viewModelScope.launch {
             taskUseCases.deleteTask(task)
         }
-
     }
 
+    fun clearError() {
+        _state.value = _state.value.copy(error = null)
+    }
 }

@@ -1,74 +1,67 @@
 package com.example.todomaster.ui.screens.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.sp
 import com.example.todomaster.domain.model.Task
-import com.example.todomaster.ui.components.buttons.AddTaskFab
 import com.example.todomaster.ui.components.cards.TaskCard
 import com.example.todomaster.ui.components.textfield.SearchTextField
-import com.example.todomaster.ui.components.topbar.HomeTopBar
-import com.example.todomaster.navigation.Screen
 
 @Composable
 fun HomeContent(
-    navController: NavController,
     tasks: List<Task>,
-    searchText: String,
-    onSearchChange: (String) -> Unit
+    isLoading: Boolean,
+    searchQuery: String,
+    onEvent: (HomeEvent) -> Unit,
+    onTaskClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        SearchTextField(
+            value = searchQuery,
+            onValueChange = { onEvent(HomeEvent.SearchQueryChanged(it)) },
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
 
-    Scaffold(
-
-        topBar = {
-            HomeTopBar(
-                onSettingsClick = {
-                    navController.navigate(Screen.Settings.route)
-                }
-            )
-        },
-
-        floatingActionButton = {
-            AddTaskFab {
-                navController.navigate(Screen.AddTask.route)
-            }
-        }
-
-    ) { padding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center
         ) {
-
-            SearchTextField(
-                value = searchText,
-                onValueChange = onSearchChange
-            )
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-
-                items(tasks) { task ->
-
-                    TaskCard(
-                        task = task,
-                        onCheckedChange = {},
-                        onMenuClick = {}
+            when {
+                isLoading -> {
+                    CircularProgressIndicator()
+                }
+                tasks.isEmpty() -> {
+                    Text(
+                        text = if (searchQuery.isBlank()) "No tasks yet! Tap + to create one." else "No matching tasks found.",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Center)
                     )
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 80.dp)
+                    ) {
+                        items(tasks, key = { it.id }) { task ->
+                            TaskCard(
+                                task = task,
+                                onCheckedChange = { onEvent(HomeEvent.ToggleTask(task)) },
+                                onTaskClick = { onTaskClick(task.id) }
+                            )
+                        }
+                    }
                 }
             }
         }

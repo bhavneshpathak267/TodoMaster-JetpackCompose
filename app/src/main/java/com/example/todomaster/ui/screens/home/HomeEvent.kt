@@ -1,20 +1,9 @@
 package com.example.todomaster.ui.screens.home
 
+import com.example.todomaster.domain.model.Task
+
 sealed interface HomeEvent {
-
-    data object AddTask : HomeEvent
-
-    data class DeleteTask(
-        val taskId: Int
-    ) : HomeEvent
-
-    data class EditTask(
-        val taskId: Int
-    ) : HomeEvent
-
-    data class ToggleTask(
-        val taskId: Int
-    ) : HomeEvent
-
-    data object OpenSettings : HomeEvent
+    data class SearchQueryChanged(val query: String) : HomeEvent
+    data class ToggleTask(val task: Task) : HomeEvent
+    data class DeleteTask(val task: Task) : HomeEvent
 }
