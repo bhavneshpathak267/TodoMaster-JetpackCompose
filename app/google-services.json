@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "726568037895",
+    "project_id": "todomaster-ef636",
+    "storage_bucket": "todomaster-ef636.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726568037895:android:63af600c3e8389fbd584a2",
+        "android_client_info": {
+          "package_name": "com.example.todomaster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg96Lwa29Eix3ydkXwB2WmaRY3CwuVfpA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
