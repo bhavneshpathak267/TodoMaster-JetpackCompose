@@ -14,15 +14,11 @@ class AuthViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     ) {
-
         auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                onSuccess()
-            }
+            .addOnSuccessListener { onSuccess() }
             .addOnFailureListener {
                 onFailure(it.message ?: "Unknown Error")
             }
-
     }
 
     // Login
@@ -32,15 +28,11 @@ class AuthViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     ) {
-
         auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                onSuccess()
-            }
+            .addOnSuccessListener { onSuccess() }
             .addOnFailureListener {
                 onFailure(it.message ?: "Unknown Error")
             }
-
     }
 
     // Auto Login
@@ -48,4 +40,8 @@ class AuthViewModel : ViewModel() {
         return auth.currentUser != null
     }
 
+    // Logout
+    fun logout() {
+        auth.signOut()
+    }
 }

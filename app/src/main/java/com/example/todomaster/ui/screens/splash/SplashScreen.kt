@@ -1,7 +1,11 @@
 package com.example.todomaster.ui.screens.splash
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,53 +52,47 @@ fun SplashScreen(
 
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(
-                        Color(0xFF6A11CB),
-                        Color(0xFF2575FC)
+                    colors = listOf(
+                        Color(0xFF6750A4),
+                        Color(0xFF3F51B5)
                     )
                 )
             ),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Text(
+            text = "📝",
+            style = MaterialTheme.typography.displayLarge
+        )
 
-            Text(
-                text = "📝",
-                style = MaterialTheme.typography.displayLarge
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "TodoMaster",
+            style = MaterialTheme.typography.headlineLarge,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
 
-            Text(
-                text = "TodoMaster",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Organize your life",
+            color = Color.White
+        )
 
-            Text(
-                text = "Organize • Plan • Achieve",
-                color = Color.White
-            )
+        Spacer(modifier = Modifier.height(40.dp))
 
-            Spacer(modifier = Modifier.height(40.dp))
-
-            CircularProgressIndicator(
-                color = Color.White
-            )
-
-        }
+        CircularProgressIndicator(
+            color = Color.White
+        )
 
     }
-
 }
