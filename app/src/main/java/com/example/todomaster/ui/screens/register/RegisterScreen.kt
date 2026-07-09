@@ -38,7 +38,7 @@ fun RegisterScreen(
     ) {
 
         Text(
-            text = "Register",
+            text = "Create Account",
             style = MaterialTheme.typography.headlineLarge
         )
 
@@ -68,6 +68,7 @@ fun RegisterScreen(
             onClick = {
 
                 authViewModel.registerUser(
+
                     email = email,
                     password = password,
 
@@ -75,28 +76,37 @@ fun RegisterScreen(
 
                         Toast.makeText(
                             context,
-                            "Account Created Successfully",
-                            Toast.LENGTH_SHORT
+                            "Account created successfully.\nVerification email sent.",
+                            Toast.LENGTH_LONG
                         ).show()
 
-                        navController.navigate(Screen.Login.route)
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Register.route) {
+                                inclusive = true
+                            }
+                        }
 
                     },
 
-                    onFailure = { message ->
+                    onFailure = {
 
                         Toast.makeText(
                             context,
-                            message,
+                            it,
                             Toast.LENGTH_LONG
                         ).show()
 
                     }
+
                 )
 
             }
         ) {
-            Text("Register")
+
+            Text("Create Account")
+
         }
+
     }
+
 }

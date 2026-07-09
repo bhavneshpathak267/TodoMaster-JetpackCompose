@@ -8,6 +8,8 @@ sealed class Screen(val route: String) {
 
     object Register : Screen("register")
 
+    object ForgotPassword : Screen("forgot_password")
+
     object Home : Screen("home_screen")
 
     object AddTask : Screen("add_task_screen")
@@ -17,7 +19,9 @@ sealed class Screen(val route: String) {
         fun passTaskId(taskId: Int): String {
             return "edit_task_screen/$taskId"
         }
+
     }
 
     object Settings : Screen("settings_screen")
+
 }

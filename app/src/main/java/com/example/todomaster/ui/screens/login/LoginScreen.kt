@@ -106,6 +106,15 @@ fun LoginScreen(
         }
 
         TextButton(
+            modifier = Modifier.align(Alignment.End),
+            onClick = {
+                navController.navigate(Screen.ForgotPassword.route)
+            }
+        ) {
+            Text("Forgot Password?")
+        }
+
+        TextButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = {
 

@@ -14,11 +14,22 @@ class AuthViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     ) {
+
         auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener {
-                onFailure(it.message ?: "Unknown Error")
+            .addOnSuccessListener {
+
+                // Send Verification Email
+                auth.currentUser?.sendEmailVerification()
+
+                onSuccess()
+
             }
+            .addOnFailureListener {
+
+                onFailure(it.message ?: "Unknown Error")
+
+            }
+
     }
 
     // Login
@@ -28,11 +39,33 @@ class AuthViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     ) {
+
         auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener {
-                onFailure(it.message ?: "Unknown Error")
+            .addOnSuccessListener {
+
+                auth.currentUser?.reload()?.addOnSuccessListener {
+
+                    if (auth.currentUser?.isEmailVerified == true) {
+
+                        onSuccess()
+
+                    } else {
+
+                        auth.signOut()
+
+                        onFailure("Please verify your email first.")
+
+                    }
+
+                }
+
             }
+            .addOnFailureListener {
+
+                onFailure(it.message ?: "Unknown Error")
+
+            }
+
     }
 
     // Auto Login
@@ -40,8 +73,31 @@ class AuthViewModel : ViewModel() {
         return auth.currentUser != null
     }
 
+    // Current User Email
+    fun getCurrentUserEmail(): String {
+        return auth.currentUser?.email ?: "No User"
+    }
+
     // Logout
     fun logout() {
         auth.signOut()
     }
+
+    // Forgot Password
+    fun sendPasswordResetEmail(
+        email: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+
+        auth.sendPasswordResetEmail(email)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it.message ?: "Unknown Error")
+            }
+
+    }
+
 }
