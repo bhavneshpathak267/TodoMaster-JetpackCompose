@@ -45,10 +45,36 @@ class TaskRepositoryImpl(
     }
 
     override suspend fun updateTask(task: Task) {
+
         dao.updateTask(task.toTaskEntity())
+
+        remote.updateTask(
+            task = task,
+            onSuccess = {
+                // Cloud update success
+            },
+            onFailure = {
+                // TODO: Handle update failure
+            }
+        )
+
     }
 
     override suspend fun deleteTask(task: Task) {
+
         dao.deleteTask(task.toTaskEntity())
+
+        if (task.cloudId.isNotBlank()) {
+            remote.deleteTask(
+                cloudId = task.cloudId,
+                onSuccess = {
+                    // Cloud delete success
+                },
+                onFailure = {
+                    // TODO: Handle delete failure
+                }
+            )
+        }
+
     }
 }

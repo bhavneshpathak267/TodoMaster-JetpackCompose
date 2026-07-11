@@ -12,7 +12,7 @@ class TaskSyncManager(
 
         task: Task,
 
-        onSuccess: () -> Unit,
+        onSuccess: (Task) -> Unit,
 
         onFailure: (String) -> Unit
 
