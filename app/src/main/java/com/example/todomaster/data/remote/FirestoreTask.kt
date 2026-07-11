@@ -10,6 +10,10 @@ data class FirestoreTask(
 
     val isCompleted: Boolean = false,
 
+    val createdAt: Long = 0L,
+
+    val dueDate: Long? = null,
+
     val userId: String = ""
 
 )

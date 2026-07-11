@@ -7,9 +7,11 @@ import com.example.todomaster.domain.model.Task
 import com.example.todomaster.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import com.example.todomaster.data.remote.TaskRemoteDataSource
 
 class TaskRepositoryImpl(
-    private val dao: TaskDao
+    private val dao: TaskDao,
+    private val remote: TaskRemoteDataSource
 ) : TaskRepository {
 
     override fun getTasks(): Flow<List<Task>> {
@@ -23,7 +25,23 @@ class TaskRepositoryImpl(
     }
 
     override suspend fun insertTask(task: Task) {
+
         dao.insertTask(task.toTaskEntity())
+
+        remote.uploadTask(
+
+            task = task,
+
+            onSuccess = {
+                // Cloud Sync Success
+            },
+
+            onFailure = {
+                // TODO: Handle upload failure later
+            }
+
+        )
+
     }
 
     override suspend fun updateTask(task: Task) {
