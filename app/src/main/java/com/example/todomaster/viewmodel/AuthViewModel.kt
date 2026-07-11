@@ -39,7 +39,9 @@ class AuthViewModel : ViewModel() {
                     val user = User(
                         uid = firebaseUser.uid,
                         name = name,
-                        email = email
+                        email = email,
+                        bio = "",
+                        photoUri = ""
                     )
 
                     db.collection("users")
@@ -110,9 +112,17 @@ class AuthViewModel : ViewModel() {
                 if (document.exists()) {
 
                     userState = UserState(
+
                         uid = document.getString("uid") ?: "",
+
                         name = document.getString("name") ?: "",
-                        email = document.getString("email") ?: ""
+
+                        email = document.getString("email") ?: "",
+
+                        bio = document.getString("bio") ?: "",
+
+                        photoUri = document.getString("photoUri") ?: ""
+
                     )
 
                 }
@@ -149,6 +159,68 @@ class AuthViewModel : ViewModel() {
             }
             .addOnFailureListener {
                 onFailure(it.message ?: "Unknown Error")
+            }
+
+    }
+
+    // Update User Name
+    fun updateUserName(
+        newName: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+
+        val uid = auth.currentUser?.uid
+
+        if (uid == null) {
+            onFailure("User not logged in")
+            return
+        }
+
+        db.collection("users")
+            .document(uid)
+            .update("name", newName)
+            .addOnSuccessListener {
+
+                userState = userState.copy(
+                    name = newName
+                )
+
+                onSuccess()
+
+            }
+            .addOnFailureListener {
+
+                onFailure(it.message ?: "Update Failed")
+
+            }
+
+    }
+
+    fun updateUserBio(
+        newBio: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+
+        val uid = auth.currentUser?.uid ?: return
+
+        db.collection("users")
+            .document(uid)
+            .update("bio", newBio)
+            .addOnSuccessListener {
+
+                userState = userState.copy(
+                    bio = newBio
+                )
+
+                onSuccess()
+
+            }
+            .addOnFailureListener {
+
+                onFailure(it.message ?: "Unknown Error")
+
             }
 
     }

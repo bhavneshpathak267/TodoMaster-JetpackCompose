@@ -12,18 +12,19 @@ import com.example.todomaster.ui.screens.edittask.EditTaskScreen
 import com.example.todomaster.ui.screens.forgotpassword.ForgotPasswordScreen
 import com.example.todomaster.ui.screens.home.HomeScreen
 import com.example.todomaster.ui.screens.login.LoginScreen
+import com.example.todomaster.ui.screens.profile.ProfileScreen
 import com.example.todomaster.ui.screens.register.RegisterScreen
 import com.example.todomaster.ui.screens.settings.SettingsScreen
 import com.example.todomaster.ui.screens.splash.SplashScreen
 import com.example.todomaster.viewmodel.AuthViewModel
 import com.example.todomaster.viewmodel.TaskViewModel
-import com.example.todomaster.ui.screens.profile.ProfileScreen
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    viewModel: TaskViewModel
+    viewModel: TaskViewModel,
+    authViewModel: AuthViewModel
 ) {
 
     NavHost(
@@ -35,7 +36,7 @@ fun NavGraph(
         composable(Screen.Splash.route) {
             SplashScreen(
                 navController = navController,
-                authViewModel = AuthViewModel()
+                authViewModel = authViewModel
             )
         }
 
@@ -43,7 +44,7 @@ fun NavGraph(
         composable(Screen.Login.route) {
             LoginScreen(
                 navController = navController,
-                authViewModel = AuthViewModel()
+                authViewModel = authViewModel
             )
         }
 
@@ -51,7 +52,7 @@ fun NavGraph(
         composable(Screen.Register.route) {
             RegisterScreen(
                 navController = navController,
-                authViewModel = AuthViewModel()
+                authViewModel = authViewModel
             )
         }
 
@@ -59,7 +60,7 @@ fun NavGraph(
         composable(Screen.ForgotPassword.route) {
             ForgotPasswordScreen(
                 navController = navController,
-                authViewModel = AuthViewModel()
+                authViewModel = authViewModel
             )
         }
 
@@ -85,7 +86,6 @@ fun NavGraph(
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile.route)
                 }
-
             )
         }
 
@@ -119,14 +119,13 @@ fun NavGraph(
                     navController.popBackStack()
                 }
             )
-
         }
 
         // Settings
         composable(Screen.Settings.route) {
             SettingsScreen(
                 navController = navController,
-                authViewModel = AuthViewModel(),
+                authViewModel = authViewModel,
                 onNavigateBack = {
                     navController.popBackStack()
                 }
@@ -135,17 +134,10 @@ fun NavGraph(
 
         // Profile
         composable(Screen.Profile.route) {
-
             ProfileScreen(
-
                 navController = navController,
-
-                authViewModel = AuthViewModel()
-
+                authViewModel = authViewModel
             )
-
         }
-
     }
-
 }
