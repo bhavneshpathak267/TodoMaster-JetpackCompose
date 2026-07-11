@@ -17,6 +17,7 @@ import com.example.todomaster.ui.screens.settings.SettingsScreen
 import com.example.todomaster.ui.screens.splash.SplashScreen
 import com.example.todomaster.viewmodel.AuthViewModel
 import com.example.todomaster.viewmodel.TaskViewModel
+import com.example.todomaster.ui.screens.profile.ProfileScreen
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
@@ -66,17 +67,25 @@ fun NavGraph(
         composable(Screen.Home.route) {
             HomeScreen(
                 viewModel = viewModel,
+
                 onNavigateToAddTask = {
                     navController.navigate(Screen.AddTask.route)
                 },
+
                 onNavigateToEditTask = { taskId ->
                     navController.navigate(
                         Screen.EditTask.passTaskId(taskId)
                     )
                 },
+
                 onNavigateToSettings = {
                     navController.navigate(Screen.Settings.route)
+                },
+
+                onNavigateToProfile = {
+                    navController.navigate(Screen.Profile.route)
                 }
+
             )
         }
 
@@ -122,6 +131,19 @@ fun NavGraph(
                     navController.popBackStack()
                 }
             )
+        }
+
+        // Profile
+        composable(Screen.Profile.route) {
+
+            ProfileScreen(
+
+                navController = navController,
+
+                authViewModel = AuthViewModel()
+
+            )
+
         }
 
     }

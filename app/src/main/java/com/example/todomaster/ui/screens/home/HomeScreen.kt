@@ -18,38 +18,75 @@ fun HomeScreen(
     viewModel: TaskViewModel,
     onNavigateToAddTask: () -> Unit,
     onNavigateToEditTask: (Int) -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
+
     val state by viewModel.state.collectAsState()
 
     Scaffold(
+
         topBar = {
+
             HomeTopBar(
+
+                onProfileClick = onNavigateToProfile,
+
                 onSettingsClick = onNavigateToSettings
+
             )
+
         },
+
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAddTask) {
+
+            FloatingActionButton(
+                onClick = onNavigateToAddTask
+            ) {
+
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Task"
                 )
+
             }
+
         }
+
     ) { padding ->
+
         HomeContent(
+
             tasks = state.tasks,
+
             isLoading = state.isLoading,
-            searchQuery = "", // Handle if search is implemented in ViewModel
+
+            searchQuery = "",
+
             onEvent = { event ->
+
                 when (event) {
-                    is HomeEvent.ToggleTask -> viewModel.toggleTaskCompletion(event.task)
-                    is HomeEvent.DeleteTask -> viewModel.deleteTask(event.task)
-                    is HomeEvent.SearchQueryChanged -> { /* Handle search if needed */ }
+
+                    is HomeEvent.ToggleTask ->
+                        viewModel.toggleTaskCompletion(event.task)
+
+                    is HomeEvent.DeleteTask ->
+                        viewModel.deleteTask(event.task)
+
+                    is HomeEvent.SearchQueryChanged -> {
+                        // Search will be implemented later
+                    }
+
                 }
+
             },
+
             onTaskClick = onNavigateToEditTask,
+
             modifier = Modifier.padding(padding)
+
         )
+
     }
+
 }

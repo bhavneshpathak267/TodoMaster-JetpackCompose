@@ -1,8 +1,12 @@
 package com.example.todomaster.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.todomaster.data.model.User
 import com.example.todomaster.data.remote.FirestoreProvider
+import com.example.todomaster.data.state.UserState
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthViewModel : ViewModel() {
@@ -10,6 +14,9 @@ class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
 
     private val db = FirestoreProvider.db
+
+    var userState by mutableStateOf(UserState())
+        private set
 
     // Register
     fun registerUser(
@@ -39,23 +46,17 @@ class AuthViewModel : ViewModel() {
                         .document(firebaseUser.uid)
                         .set(user)
                         .addOnSuccessListener {
-
                             onSuccess()
-
                         }
                         .addOnFailureListener {
-
                             onFailure(it.message ?: "Firestore Error")
-
                         }
 
                 }
 
             }
             .addOnFailureListener {
-
                 onFailure(it.message ?: "Unknown Error")
-
             }
 
     }
@@ -75,6 +76,8 @@ class AuthViewModel : ViewModel() {
 
                     if (auth.currentUser?.isEmailVerified == true) {
 
+                        getUserData()
+
                         onSuccess()
 
                     } else {
@@ -89,8 +92,30 @@ class AuthViewModel : ViewModel() {
 
             }
             .addOnFailureListener {
-
                 onFailure(it.message ?: "Unknown Error")
+            }
+
+    }
+
+    // Fetch User Data From Firestore
+    fun getUserData() {
+
+        val uid = auth.currentUser?.uid ?: return
+
+        db.collection("users")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (document.exists()) {
+
+                    userState = UserState(
+                        uid = document.getString("uid") ?: "",
+                        name = document.getString("name") ?: "",
+                        email = document.getString("email") ?: ""
+                    )
+
+                }
 
             }
 
