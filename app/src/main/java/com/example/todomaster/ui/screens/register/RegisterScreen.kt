@@ -46,21 +46,27 @@ fun RegisterScreen(
             value = name,
             onValueChange = { name = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Full Name") }
+            label = {
+                Text("Full Name")
+            }
         )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Email") }
+            label = {
+                Text("Email")
+            }
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Password") }
+            label = {
+                Text("Password")
+            }
         )
 
         Button(
@@ -69,7 +75,10 @@ fun RegisterScreen(
 
                 authViewModel.registerUser(
 
+                    name = name,
+
                     email = email,
+
                     password = password,
 
                     onSuccess = {
@@ -88,11 +97,11 @@ fun RegisterScreen(
 
                     },
 
-                    onFailure = {
+                    onFailure = { error ->
 
                         Toast.makeText(
                             context,
-                            it,
+                            error,
                             Toast.LENGTH_LONG
                         ).show()
 

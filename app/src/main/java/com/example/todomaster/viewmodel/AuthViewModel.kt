@@ -1,14 +1,19 @@
 package com.example.todomaster.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.example.todomaster.data.model.User
+import com.example.todomaster.data.remote.FirestoreProvider
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthViewModel : ViewModel() {
 
     private val auth = FirebaseAuth.getInstance()
 
+    private val db = FirestoreProvider.db
+
     // Register
     fun registerUser(
+        name: String,
         email: String,
         password: String,
         onSuccess: () -> Unit,
@@ -16,12 +21,35 @@ class AuthViewModel : ViewModel() {
     ) {
 
         auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
+            .addOnSuccessListener { result ->
 
-                // Send Verification Email
-                auth.currentUser?.sendEmailVerification()
+                val firebaseUser = result.user
 
-                onSuccess()
+                if (firebaseUser != null) {
+
+                    firebaseUser.sendEmailVerification()
+
+                    val user = User(
+                        uid = firebaseUser.uid,
+                        name = name,
+                        email = email
+                    )
+
+                    db.collection("users")
+                        .document(firebaseUser.uid)
+                        .set(user)
+                        .addOnSuccessListener {
+
+                            onSuccess()
+
+                        }
+                        .addOnFailureListener {
+
+                            onFailure(it.message ?: "Firestore Error")
+
+                        }
+
+                }
 
             }
             .addOnFailureListener {
