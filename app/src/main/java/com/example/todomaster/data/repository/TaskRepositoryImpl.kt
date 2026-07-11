@@ -3,11 +3,11 @@ package com.example.todomaster.data.repository
 import com.example.todomaster.data.local.TaskDao
 import com.example.todomaster.data.mapper.toTask
 import com.example.todomaster.data.mapper.toTaskEntity
+import com.example.todomaster.data.remote.TaskRemoteDataSource
 import com.example.todomaster.domain.model.Task
 import com.example.todomaster.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import com.example.todomaster.data.remote.TaskRemoteDataSource
 
 class TaskRepositoryImpl(
     private val dao: TaskDao,
@@ -26,21 +26,15 @@ class TaskRepositoryImpl(
 
     override suspend fun insertTask(task: Task) {
 
+        // Save locally
         dao.insertTask(task.toTaskEntity())
 
-        remote.uploadTask(
-
-            task = task,
-
-            onSuccess = {
-                // Cloud Sync Success
-            },
-
-            onFailure = {
-                // TODO: Handle upload failure later
-            }
-
-        )
+        // Upload to Firestore
+        try {
+            remote.uploadTask(task)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -48,15 +42,11 @@ class TaskRepositoryImpl(
 
         dao.updateTask(task.toTaskEntity())
 
-        remote.updateTask(
-            task = task,
-            onSuccess = {
-                // Cloud update success
-            },
-            onFailure = {
-                // TODO: Handle update failure
-            }
-        )
+        try {
+            remote.updateTask(task)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -65,15 +55,11 @@ class TaskRepositoryImpl(
         dao.deleteTask(task.toTaskEntity())
 
         if (task.cloudId.isNotBlank()) {
-            remote.deleteTask(
-                cloudId = task.cloudId,
-                onSuccess = {
-                    // Cloud delete success
-                },
-                onFailure = {
-                    // TODO: Handle delete failure
-                }
-            )
+            try {
+                remote.deleteTask(task.cloudId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
     }

@@ -5,33 +5,26 @@ import com.example.todomaster.data.mapper.toTask
 import com.example.todomaster.domain.model.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class TaskRemoteDataSource(
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
 ) {
 
-    private fun currentUid(): String? = auth.currentUser?.uid
+    private fun uid(): String =
+        auth.currentUser?.uid
+            ?: throw Exception("User not logged in")
 
     private fun taskCollection() =
         db.collection("users")
-            .document(currentUid() ?: "")
+            .document(uid())
             .collection("tasks")
 
-    fun uploadTask(
-        task: Task,
-        onSuccess: (Task) -> Unit,
-        onFailure: (String) -> Unit
-    ) {
-
-        val uid = currentUid()
-
-        if (uid == null) {
-            onFailure("User not logged in")
-            return
-        }
+    suspend fun uploadTask(task: Task): Task {
 
         val document =
             if (task.cloudId.isBlank())
@@ -39,128 +32,53 @@ class TaskRemoteDataSource(
             else
                 taskCollection().document(task.cloudId)
 
-        val updatedTask = task.copy(
-            cloudId = document.id
-        )
+        val updatedTask =
+            task.copy(
+                cloudId = document.id
+            )
 
         document
-            .set(updatedTask.toFirestoreTask(uid))
-            .addOnSuccessListener {
-                onSuccess(updatedTask)
-            }
-            .addOnFailureListener {
-                onFailure(it.message ?: "Upload failed")
-            }
+            .set(updatedTask.toFirestoreTask(uid()))
+            .await()
+
+        return updatedTask
+    }
+
+    suspend fun fetchTasks(): List<Task> {
+
+        val snapshot =
+            taskCollection()
+                .get()
+                .await()
+
+        return snapshot.documents.mapNotNull {
+
+            it.toObject(FirestoreTask::class.java)
+                ?.toTask()
+
+        }
 
     }
 
-    fun fetchTasks(
+    suspend fun updateTask(task: Task) {
 
-        onSuccess: (List<Task>) -> Unit,
-
-        onFailure: (String) -> Unit
-
-    ) {
-
-        val uid = currentUid()
-
-        if (uid == null) {
-
-            onFailure("User not logged in")
-
+        if (task.cloudId.isBlank())
             return
-
-        }
-
-        taskCollection()
-
-            .get()
-
-            .addOnSuccessListener { result ->
-
-                val tasks = result.documents.mapNotNull {
-
-                    it.toObject(FirestoreTask::class.java)?.toTask()
-
-                }
-
-                onSuccess(tasks)
-
-            }
-
-            .addOnFailureListener {
-
-                onFailure(it.message ?: "Download failed")
-
-            }
-
-    }
-
-    fun updateTask(
-
-        task: Task,
-
-        onSuccess: () -> Unit,
-
-        onFailure: (String) -> Unit
-
-    ) {
-
-        val uid = currentUid()
-
-        if (uid == null) {
-
-            onFailure("User not logged in")
-
-            return
-
-        }
-
-        if (task.cloudId.isBlank()) {
-
-            onFailure("Missing cloudId")
-
-            return
-
-        }
 
         taskCollection()
 
             .document(task.cloudId)
 
-            .set(task.toFirestoreTask(uid))
+            .set(task.toFirestoreTask(uid()))
 
-            .addOnSuccessListener {
-
-                onSuccess()
-
-            }
-
-            .addOnFailureListener {
-
-                onFailure(it.message ?: "Update failed")
-
-            }
+            .await()
 
     }
 
-    fun deleteTask(
+    suspend fun deleteTask(cloudId: String) {
 
-        cloudId: String,
-
-        onSuccess: () -> Unit,
-
-        onFailure: (String) -> Unit
-
-    ) {
-
-        if (cloudId.isBlank()) {
-
-            onFailure("Missing cloudId")
-
+        if (cloudId.isBlank())
             return
-
-        }
 
         taskCollection()
 
@@ -168,17 +86,7 @@ class TaskRemoteDataSource(
 
             .delete()
 
-            .addOnSuccessListener {
-
-                onSuccess()
-
-            }
-
-            .addOnFailureListener {
-
-                onFailure(it.message ?: "Delete failed")
-
-            }
+            .await()
 
     }
 

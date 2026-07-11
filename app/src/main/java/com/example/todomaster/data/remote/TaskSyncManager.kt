@@ -8,25 +8,9 @@ class TaskSyncManager(
 
 ) {
 
-    fun syncTask(
+    suspend fun syncTask(task: Task): Task {
 
-        task: Task,
-
-        onSuccess: (Task) -> Unit,
-
-        onFailure: (String) -> Unit
-
-    ) {
-
-        remoteDataSource.uploadTask(
-
-            task = task,
-
-            onSuccess = onSuccess,
-
-            onFailure = onFailure
-
-        )
+        return remoteDataSource.uploadTask(task)
 
     }
 
