@@ -4,6 +4,8 @@ data class FirestoreTask(
 
     val id: Int = 0,
 
+    val cloudId: String = "",
+
     val title: String = "",
 
     val description: String = "",

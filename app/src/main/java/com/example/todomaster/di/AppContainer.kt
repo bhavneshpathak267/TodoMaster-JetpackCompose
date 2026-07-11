@@ -2,6 +2,7 @@ package com.example.todomaster.di
 
 import android.content.Context
 import com.example.todomaster.data.local.DatabaseProvider
+import com.example.todomaster.data.remote.TaskRemoteDataSource
 import com.example.todomaster.data.repository.TaskRepositoryImpl
 import com.example.todomaster.domain.repository.TaskRepository
 import com.example.todomaster.domain.usecase.*
@@ -12,10 +13,20 @@ class AppContainer(private val context: Context) {
         DatabaseProvider.provideDatabase(context)
     }
 
-    private val repository: TaskRepository by lazy {
-        TaskRepositoryImpl(database.taskDao)
+    // Remote Data Source
+    private val remoteDataSource by lazy {
+        TaskRemoteDataSource()
     }
 
+    // Repository
+    private val repository: TaskRepository by lazy {
+        TaskRepositoryImpl(
+            dao = database.taskDao,
+            remote = remoteDataSource
+        )
+    }
+
+    // UseCases
     val taskUseCases: TaskUseCases by lazy {
         TaskUseCases(
             getTasks = GetTasksUseCase(repository),

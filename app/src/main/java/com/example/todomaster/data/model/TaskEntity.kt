@@ -5,10 +5,20 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "tasks")
 data class TaskEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+
+    val cloudId: String = "",
+
     val title: String,
+
     val description: String,
+
     val isCompleted: Boolean,
-    val createdAt: Long, // Storing Date as a timestamp (Long)
-    val dueDate: Long?  // Optional timestamp for due dates
+
+    val createdAt: Long,
+
+    val dueDate: Long?
+
 )

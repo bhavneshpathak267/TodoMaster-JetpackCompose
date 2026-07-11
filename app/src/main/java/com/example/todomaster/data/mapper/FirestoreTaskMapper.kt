@@ -10,6 +10,8 @@ fun Task.toFirestoreTask(userId: String): FirestoreTask {
 
         id = id,
 
+        cloudId = cloudId,
+
         title = title,
 
         description = description,
@@ -31,6 +33,8 @@ fun FirestoreTask.toTask(): Task {
     return Task(
 
         id = id,
+
+        cloudId = cloudId,
 
         title = title,
 
