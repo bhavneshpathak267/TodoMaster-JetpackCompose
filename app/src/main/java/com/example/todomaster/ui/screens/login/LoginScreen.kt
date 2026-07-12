@@ -19,11 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.todomaster.navigation.Screen
 import com.example.todomaster.viewmodel.AuthViewModel
+import com.example.todomaster.viewmodel.TaskViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    taskViewModel: TaskViewModel
 ) {
 
     val context = LocalContext.current
@@ -75,6 +77,8 @@ fun LoginScreen(
                     password = password,
 
                     onSuccess = {
+
+                        taskViewModel.syncFromCloud()
 
                         Toast.makeText(
                             context,

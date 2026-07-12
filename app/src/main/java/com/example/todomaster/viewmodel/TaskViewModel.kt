@@ -72,6 +72,18 @@ class TaskViewModel(
         }
     }
 
+    fun syncFromCloud() {
+        viewModelScope.launch {
+            try {
+                taskUseCases.syncFromCloud()
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    error = e.message
+                )
+            }
+        }
+    }
+
     fun clearError() {
         _state.value = _state.value.copy(error = null)
     }

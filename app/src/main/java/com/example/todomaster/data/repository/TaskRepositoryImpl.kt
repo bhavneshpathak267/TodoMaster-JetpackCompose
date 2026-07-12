@@ -63,4 +63,18 @@ class TaskRepositoryImpl(
         }
 
     }
+
+    override suspend fun syncFromCloud() {
+
+        val remoteTasks = remote.downloadTasks()
+
+        remoteTasks.forEach { task ->
+
+            dao.insertTask(
+                task.toTaskEntity()
+            )
+
+        }
+
+    }
 }

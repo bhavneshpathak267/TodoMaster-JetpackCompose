@@ -44,7 +44,8 @@ fun NavGraph(
         composable(Screen.Login.route) {
             LoginScreen(
                 navController = navController,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                taskViewModel = viewModel
             )
         }
 

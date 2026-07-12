@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
+import kotlinx.coroutines.tasks.await
+
 class TaskRemoteDataSource(
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
@@ -88,6 +90,25 @@ class TaskRemoteDataSource(
 
             .await()
 
+    }
+
+    suspend fun downloadTasks(): List<Task> {
+
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+            ?: return emptyList()
+
+        val snapshot = FirestoreProvider.db
+            .collection("users")
+            .document(uid)
+            .collection("tasks")
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull {
+
+            it.toObject(FirestoreTask::class.java)?.toTask()
+
+        }
     }
 
 }

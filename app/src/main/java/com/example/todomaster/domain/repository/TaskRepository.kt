@@ -15,4 +15,6 @@ interface TaskRepository {
 
     suspend fun deleteTask(task: Task)
 
+    suspend fun syncFromCloud()
+
 }

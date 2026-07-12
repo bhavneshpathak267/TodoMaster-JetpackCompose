@@ -32,7 +32,8 @@ class AppContainer(private val context: Context) {
             getTasks = GetTasksUseCase(repository),
             addTask = AddTaskUseCase(repository),
             updateTask = UpdateTaskUseCase(repository),
-            deleteTask = DeleteTaskUseCase(repository)
+            deleteTask = DeleteTaskUseCase(repository),
+            syncFromCloud = SyncFromCloudUseCase(repository)
         )
     }
 }
