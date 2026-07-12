@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import com.example.todomaster.data.worker.SyncScheduler
 import com.example.todomaster.di.AppContainer
 import com.example.todomaster.navigation.NavGraph
 import com.example.todomaster.ui.theme.TodoMasterTheme
@@ -21,12 +22,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Schedule background task sync
+        SyncScheduler.schedule(applicationContext)
+
+        // Dependency Injection
         val appContainer = AppContainer(applicationContext)
 
-        val taskFactory = TaskViewModelFactory(appContainer.taskUseCases)
+        // ViewModel Factory
+        val viewModelFactory =
+            TaskViewModelFactory(appContainer.taskUseCases)
 
-        val taskViewModel =
-            ViewModelProvider(this, taskFactory)[TaskViewModel::class.java]
+        val viewModel =
+            ViewModelProvider(
+                this,
+                viewModelFactory
+            )[TaskViewModel::class.java]
 
         val authViewModel =
             ViewModelProvider(this)[AuthViewModel::class.java]
@@ -44,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
                     NavGraph(
                         navController = navController,
-                        viewModel = taskViewModel,
+                        viewModel = viewModel,
                         authViewModel = authViewModel
                     )
 

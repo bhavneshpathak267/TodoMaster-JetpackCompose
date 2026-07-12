@@ -1,6 +1,11 @@
 package com.example.todomaster.data.local
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.example.todomaster.data.model.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +19,7 @@ interface TaskDao {
     suspend fun getTaskById(id: Int): TaskEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: TaskEntity): Long
+    suspend fun insertTask(task: TaskEntity)
 
     @Update
     suspend fun updateTask(task: TaskEntity)
@@ -22,9 +27,7 @@ interface TaskDao {
     @Delete
     suspend fun deleteTask(task: TaskEntity)
 
-    @Query("DELETE FROM tasks")
-    suspend fun deleteAllTasks()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTasks(tasks: List<TaskEntity>)
+    // Sprint 3.2
+    @Query("SELECT * FROM tasks")
+    suspend fun getAllTasksOnce(): List<TaskEntity>
 }
