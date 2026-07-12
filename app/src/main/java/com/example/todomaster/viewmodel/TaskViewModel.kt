@@ -43,15 +43,24 @@ class TaskViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun addTask(title: String, description: String) {
+    fun addTask(task: Task) {
+
         viewModelScope.launch {
+
             try {
-                val newTask = Task(title = title, description = description)
-                taskUseCases.addTask(newTask)
+
+                taskUseCases.addTask(task)
+
             } catch (e: Exception) {
-                _state.value = _state.value.copy(error = e.message)
+
+                _state.value = _state.value.copy(
+                    error = e.message
+                )
+
             }
+
         }
+
     }
 
     fun updateTask(task: Task) {

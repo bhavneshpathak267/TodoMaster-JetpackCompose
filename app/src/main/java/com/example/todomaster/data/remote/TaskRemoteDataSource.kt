@@ -6,8 +6,8 @@ import com.example.todomaster.domain.model.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import com.example.todomaster.data.model.FirestoreTask
 
-import kotlinx.coroutines.tasks.await
 
 class TaskRemoteDataSource(
 

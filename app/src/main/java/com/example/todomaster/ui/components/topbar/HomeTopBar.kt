@@ -1,59 +1,102 @@
 package com.example.todomaster.ui.components.topbar
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(
-
     onProfileClick: () -> Unit,
-
     onSettingsClick: () -> Unit
-
 ) {
 
-    TopAppBar(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF6750A4),
+                        Color(0xFF8E7BFF)
+                    )
+                )
+            )
+            .padding(20.dp)
+    ) {
 
-        title = {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-            Text("TodoMaster")
-
-        },
-
-        actions = {
-
-            IconButton(
-                onClick = onProfileClick
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
 
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "Profile"
+                Text(
+                    text = "👋 Welcome Back",
+                    color = Color.White.copy(alpha = .9f),
+                    fontSize = 15.sp
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "TodoMaster",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp
                 )
 
             }
 
             IconButton(
-                onClick = onSettingsClick
+                onClick = onProfileClick,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = .18f))
             ) {
 
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            IconButton(
+                onClick = onSettingsClick,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = .18f))
+            ) {
+
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = null,
+                    tint = Color.White
                 )
 
             }
 
         }
 
-    )
+    }
 
 }
